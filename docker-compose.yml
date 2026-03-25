@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Servicio 1: Nuestra Base de Datos Clave-Valor (Etcd)
   etcd-db:
     image: quay.io/coreos/etcd:v3.5.9
     environment:
@@ -10,8 +9,7 @@ services:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
     ports:
       - "2379:2379"
-
-  # Servicio 2: Nuestra API en Node.js
+      
   api-crud:
     build: .
     ports:
