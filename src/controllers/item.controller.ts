@@ -41,6 +41,36 @@ export const leerPersonaje = async (req: Request, res: Response): Promise<void> 
     }
 };
 
+export const actualizarPersonaje = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id;
+        const clave = `personaje:${id}`;
+
+        const valorActualTexto = await client.get(clave).string();
+        
+        if (!valorActualTexto) {
+            res.status(404).json({ error: "El personaje no existe, no se puede actualizar" });
+            return;
+        }
+
+        const datosActuales = JSON.parse(valorActualTexto);
+       
+        const datosNuevos = req.body; 
+        
+        const datosCombinados = { ...datosActuales, ...datosNuevos };
+
+        const nuevoValorEnTexto = JSON.stringify(datosCombinados);
+        await client.put(clave).value(nuevoValorEnTexto);
+        
+        res.json({ 
+            mensaje: `¡El personaje ${id} fue actualizado con éxito!`, 
+            datos: datosCombinados 
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error al actualizar el dato en Etcd" });
+    }
+};
+
 export const borrarPersonaje = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = req.params.id;
